@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
-from core import Item
 
 
 class ItemBase(BaseModel):
@@ -18,15 +17,19 @@ class Item(ItemBase):
     owner_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserBase(BaseModel):
-    email: str
+    email: EmailStr
 
 
 class UserCreate(UserBase):
     password: str
+
+
+class LiteUser(UserBase):
+    id: int
 
 
 class User(UserBase):
@@ -35,4 +38,4 @@ class User(UserBase):
     items: List[Item] = []
 
     class Config:
-        orm_model = True
+        from_attributes = True
