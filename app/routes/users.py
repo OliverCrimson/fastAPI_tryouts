@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from app.controllers.users import register
 from app.models import schemas
 from app.models.database import get_db
-from app.views.users import get_users
+from app.secure import apikey_scheme
+from app.views.users import get_users, get_user_by_token
 
 router = APIRouter()
 
@@ -20,3 +21,9 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @router.post('', response_model=schemas.LiteUser, status_code=201)
 def register_user(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     return register(db=db, user_data=user_data)
+
+
+@router.get("/self", response_model=None)
+def get_user_by_id(access_token: Annotated[str, Depends(apikey_scheme)],
+                   db: Session = Depends(get_db)):
+    return get_user_by_token(access_token=access_token, db=db)

@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 
-
 class ItemBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -26,6 +25,13 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+
+
+UserAuth = UserCreate
+
+
+class Token(BaseModel):
+    access_token: str
 
 
 class LiteUser(UserBase):
